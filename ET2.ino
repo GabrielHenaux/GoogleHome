@@ -113,7 +113,7 @@ void setupTimer() {
   TC0->TC_CHANNEL[0].TC_CMR = TC_CMR_TCCLKS_TIMER_CLOCK4 | TC_CMR_CPCTRG;  // Set the clock source to TCLK4 (MCK / 128, 84 MHz / 128 = 656.25 kHz)
   // Enable the RC compare trigger
   // Set the RC value for a Fe1 Hz frequency
-  TC0->TC_CHANNEL[0].TC_RC = 656250 / 44100 - 1;
+  TC0->TC_CHANNEL[0].TC_RC = 656250 / samplingFrequency - 1;
   TC0->TC_CHANNEL[0].TC_CCR = TC_CCR_CLKEN | TC_CCR_SWTRG;  // Enable the timer counter and trigger it
   TC0->TC_CHANNEL[0].TC_IER = TC_IER_CPCS;                  // Enable the RC compare interrupt
   NVIC_EnableIRQ(TC0_IRQn);                                 // Enable the TC0_IRQn interrupt in the NVIC
@@ -137,7 +137,7 @@ void ADC_Handler() {
 }
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   setupADC();
   setupTimer();
   // Setup buttons and led
@@ -212,7 +212,7 @@ void loop() {
           setupTimer();
           break;
         }
-defalut:
+      default:
         {
           samplingFrequency = 44100;
           setupTimer();
@@ -220,8 +220,11 @@ defalut:
         }
     }
   }
+  uint32_t adcValue = ADC->ADC_CDR[7];
+  Serial.println(adcValue);
 
- /* if (bufferFull) {
+
+  /* if (bufferFull) {
     for (int i = 0; i < bufferSize; i++) {
       Serial.print("i: ");
      Serial.println(i);
@@ -232,5 +235,5 @@ defalut:
     ADC->ADC_RNCR = (unsigned int)bufferSize;  // Nombre d'éléments du prochain buffer à charger
     bufferFull = false;
   }*/
-  Serial.println(samplingFrequency);
+  //Serial.println(samplingFrequency);
 }
