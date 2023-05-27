@@ -137,7 +137,7 @@ void ADC_Handler() {
 }
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   setupADC();
   setupTimer();
   // Setup buttons and led
